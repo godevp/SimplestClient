@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
+using TMPro;
+
 
 public class NetworkedClient : MonoBehaviour
 {
@@ -16,11 +19,55 @@ public class NetworkedClient : MonoBehaviour
     byte error;
     bool isConnected = false;
     int ourClientID;
+    GameObject logButton;
+    GameObject registerButton;
+    [SerializeField]
+    private TMP_InputField logField;
+    [SerializeField]
+    private TMP_InputField passwordField;
 
+   
+
+    //Indetifiers
+    short login_i = 0;
+    short registration_i = 1;
+
+    string login;
+    string password;
     // Start is called before the first frame update
     void Start()
     {
+       
+
+
         Connect();
+        GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+
+        foreach (GameObject obj in allGameObjects)
+        {
+            switch (obj.name)
+            {
+                case "Login_b":
+
+                    // Debug.Log("Log button found");
+                    logButton = obj;
+                    break;
+                case "Register_b":
+                    //Debug.Log("Register button found");
+                    registerButton = obj;
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+
+        logButton.GetComponent<Button>().onClick.AddListener(LogInF);
+        registerButton.GetComponent<Button>().onClick.AddListener(RegisterF);
+
+       // logField.GetComponentInChildren<Text>().
     }
 
     // Update is called once per frame
@@ -79,7 +126,7 @@ public class NetworkedClient : MonoBehaviour
             hostID = NetworkTransport.AddHost(topology, 0);
             Debug.Log("Socket open.  Host ID = " + hostID);
 
-            connectionID = NetworkTransport.Connect(hostID, "192.168.2.37", socketPort, 0, out error); // server is local on network
+            connectionID = NetworkTransport.Connect(hostID, "10.0.246.221", socketPort, 0, out error); // server is local on network
 
             if (error == 0)
             {
@@ -110,6 +157,37 @@ public class NetworkedClient : MonoBehaviour
     public bool IsConnected()
     {
         return isConnected;
+    }
+    public void LogInF()
+    {
+        if(logField.text.Length != 0)
+            login = logField.text;
+        if (passwordField.text.Length != 0)
+            password = passwordField.text;
+
+
+        if(logField.text.Length != 0 && passwordField.text.Length != 0)
+        {
+            SendMessageToHost(login_i.ToString() + ',' + login + ',' +                              
+                              password);
+        }
+        
+
+       
+    }
+    public void RegisterF()
+    {
+        if (logField.text.Length != 0)
+            login = logField.text;
+        if (passwordField.text.Length != 0)
+            password = passwordField.text;
+
+
+        if (logField.text.Length != 0 && passwordField.text.Length != 0)
+        {
+            SendMessageToHost(registration_i.ToString() + ',' + login + ',' +
+                              password);
+        }
     }
 
 
