@@ -73,8 +73,8 @@ public class NetworkedClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
-            SendMessageToHost("Hello from client");
+        /*if (Input.GetKeyDown(KeyCode.S))
+            SendMessageToHost("Hello from client");*/
 
         UpdateNetworkConnection();
     }
@@ -126,7 +126,7 @@ public class NetworkedClient : MonoBehaviour
             hostID = NetworkTransport.AddHost(topology, 0);
             Debug.Log("Socket open.  Host ID = " + hostID);
 
-            connectionID = NetworkTransport.Connect(hostID, "10.0.246.221", socketPort, 0, out error); // server is local on network
+            connectionID = NetworkTransport.Connect(hostID, "192.168.0.156", socketPort, 0, out error); // server is local on network
 
             if (error == 0)
             {
@@ -152,6 +152,18 @@ public class NetworkedClient : MonoBehaviour
     private void ProcessRecievedMsg(string msg, int id)
     {
         Debug.Log("msg recieved = " + msg + ".  connection id = " + id);
+        switch(msg)
+        {
+            case "LoginApproved":
+                GameManager._instance.UpdateGameState(GameState.accountState);
+                break;
+            case "LoginDenied":
+                Debug.Log("Login or Password are incorrect.");
+                break;
+
+            default:
+                break;
+        }
     }
 
     public bool IsConnected()
@@ -168,12 +180,9 @@ public class NetworkedClient : MonoBehaviour
 
         if(logField.text.Length != 0 && passwordField.text.Length != 0)
         {
-            SendMessageToHost(login_i.ToString() + ',' + login + ',' +                              
-                              password);
+            SendMessageToHost(login_i.ToString() + ',' + login.ToString() + ',' +                              
+                              password.ToString());
         }
-        
-
-       
     }
     public void RegisterF()
     {
@@ -188,6 +197,7 @@ public class NetworkedClient : MonoBehaviour
             SendMessageToHost(registration_i.ToString() + ',' + login + ',' +
                               password);
         }
+        //GameManager._instance.UpdateGameState(GameState.registrationState);
     }
 
 
