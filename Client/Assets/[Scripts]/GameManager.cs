@@ -32,14 +32,12 @@ public class GameManager : MonoBehaviour
         switch(newState)
         {
             case GameState.logingState:
-                Debug.Log("we in login state");
 
                 break;
             case GameState.accountState:
                 _client.LoginPart.SetActive(false);
                 _client.AccountPart.SetActive(true);
-
-                Debug.Log("we in account state");
+              
                 break;
 
             default:
