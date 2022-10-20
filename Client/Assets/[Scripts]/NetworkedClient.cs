@@ -29,8 +29,10 @@ public class NetworkedClient : MonoBehaviour
     private TMP_InputField passwordField;
     [SerializeField]
     private TMP_InputField NewRoomField;
+    [SerializeField]
+    private TMP_Text ErrorText;
 
-   
+
 
     //Indetifiers
     static short login_i = 0;
@@ -171,7 +173,8 @@ public class NetworkedClient : MonoBehaviour
                 GameManager._instance.UpdateGameState(GameState.accountState);
                 break;
             case "LoginDenied":
-                Debug.Log("Login or Password are incorrect.");
+                ErrorText.gameObject.SetActive(true);
+                ErrorText.text = "Wrong login or password, try again";
                 break;
 
             default:
