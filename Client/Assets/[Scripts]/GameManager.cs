@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
 
     public GameState _state;
 
+    private NetworkedClient _client;
+
     public static event Action<GameState> OnGameStateChanged;
 
     private void Awake()
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         UpdateGameState(GameState.logingState);
+        _client = FindObjectOfType<NetworkedClient>();
     }
 
     public void UpdateGameState(GameState newState)
@@ -32,10 +35,10 @@ public class GameManager : MonoBehaviour
                 Debug.Log("we in login state");
 
                 break;
-            case GameState.registrationState:
-                Debug.Log("we in registration state");
-                break;
             case GameState.accountState:
+                _client.LoginPart.SetActive(false);
+                _client.AccountPart.SetActive(true);
+
                 Debug.Log("we in account state");
                 break;
 
@@ -51,6 +54,5 @@ public class GameManager : MonoBehaviour
 public enum GameState
 {
     logingState,
-    registrationState,
     accountState
 }

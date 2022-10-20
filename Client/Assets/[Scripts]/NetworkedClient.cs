@@ -21,16 +21,21 @@ public class NetworkedClient : MonoBehaviour
     int ourClientID;
     GameObject logButton;
     GameObject registerButton;
+    public GameObject AccountPart;
+    public GameObject LoginPart;
     [SerializeField]
     private TMP_InputField logField;
     [SerializeField]
     private TMP_InputField passwordField;
+    [SerializeField]
+    private TMP_InputField NewRoomField;
 
    
 
     //Indetifiers
-    short login_i = 0;
-    short registration_i = 1;
+    static short login_i = 0;
+    static short registration_i = 1;
+    static short room_i = 2;
 
     string login;
     string password;
@@ -49,12 +54,20 @@ public class NetworkedClient : MonoBehaviour
             {
                 case "Login_b":
 
-                    // Debug.Log("Log button found");
+                   
                     logButton = obj;
                     break;
                 case "Register_b":
-                    //Debug.Log("Register button found");
+                
                     registerButton = obj;
+                    break;
+                case "AccountPart":
+                    
+                    AccountPart = obj;
+                    break;
+                case "LoginPart":
+                  
+                    LoginPart = obj;
                     break;
 
                 default:
@@ -180,8 +193,8 @@ public class NetworkedClient : MonoBehaviour
 
         if(logField.text.Length != 0 && passwordField.text.Length != 0)
         {
-            SendMessageToHost(login_i.ToString() + ',' + login.ToString() + ',' +                              
-                              password.ToString());
+            SendMessageToHost(login_i.ToString() + ',' + login + ',' +                              
+                              password);
         }
     }
     public void RegisterF()
@@ -197,8 +210,16 @@ public class NetworkedClient : MonoBehaviour
             SendMessageToHost(registration_i.ToString() + ',' + login + ',' +
                               password);
         }
-        //GameManager._instance.UpdateGameState(GameState.registrationState);
     }
+    public void CreateRoom()
+    {
+        //here we want to send the name of the room to server.
+        //Debug.Log("Create/Join Room");
 
+        if (NewRoomField.text.Length != 0)
+        {
+            SendMessageToHost(room_i.ToString() + ',' + NewRoomField.text);
+        }
+    }
 
 }
