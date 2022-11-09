@@ -37,9 +37,11 @@ public class GameManager : MonoBehaviour
             case GameState.accountState:
                 _client.LoginPart.SetActive(false);
                 _client.AccountPart.SetActive(true);
-              
                 break;
-
+            case GameState.gameState:
+                _client.AccountPart.SetActive(false);
+                _client.GamePart.SetActive(true);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
         }
@@ -52,5 +54,6 @@ public class GameManager : MonoBehaviour
 public enum GameState
 {
     logingState,
-    accountState
+    accountState,
+    gameState
 }

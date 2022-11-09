@@ -23,6 +23,7 @@ public class NetworkedClient : MonoBehaviour
     GameObject registerButton;
     public GameObject AccountPart;
     public GameObject LoginPart;
+    public GameObject GamePart;
     [SerializeField]
     private TMP_InputField logField;
     [SerializeField]
@@ -31,6 +32,9 @@ public class NetworkedClient : MonoBehaviour
     private TMP_InputField NewRoomField;
     [SerializeField]
     private TMP_Text ErrorText;
+
+    public bool turn = true; // true = first player(X), false = second player(O)
+    public int connectionNumber = 0;//0 - not connected, 1 connected as first one, 2 second 
 
 
 
@@ -70,6 +74,10 @@ public class NetworkedClient : MonoBehaviour
                 case "LoginPart":
                   
                     LoginPart = obj;
+                    break;
+                case "GamePart":
+
+                    GamePart = obj;
                     break;
 
                 default:
@@ -176,6 +184,15 @@ public class NetworkedClient : MonoBehaviour
                 ErrorText.gameObject.SetActive(true);
                 ErrorText.text = "Wrong login or password, try again";
                 break;
+            case "FirstPlayer":
+                GameManager._instance.UpdateGameState(GameState.gameState);
+                connectionNumber = 1;
+
+                break;
+            case "SecondPlayer":
+                GameManager._instance.UpdateGameState(GameState.gameState);
+                connectionNumber = 2;
+                break;
 
             default:
                 break;
@@ -216,9 +233,6 @@ public class NetworkedClient : MonoBehaviour
     }
     public void CreateRoom()
     {
-        //here we want to send the name of the room to server.
-        //Debug.Log("Create/Join Room");
-
         if (NewRoomField.text.Length != 0)
         {
             SendMessageToHost(room_i.ToString() + ',' + NewRoomField.text);
