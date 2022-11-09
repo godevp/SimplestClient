@@ -217,7 +217,6 @@ public class NetworkedClient : MonoBehaviour
 
             case "333":
                 canMove = true;
-                Debug.Log(splitter[1] +"<<<<");
                 _slot.SetTheSlotToTaken(int.Parse(splitter[1]));
                 break;
 
