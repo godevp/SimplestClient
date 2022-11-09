@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using TMPro;
-
+using Unity.VisualScripting;
 
 public class NetworkedClient : MonoBehaviour
 {
@@ -32,6 +32,8 @@ public class NetworkedClient : MonoBehaviour
     private TMP_InputField NewRoomField;
     [SerializeField]
     private TMP_Text ErrorText;
+
+    public TMP_Text loserORwinner;
 
     public bool turn = true; // true = first player(X), false = second player(O)
     public int connectionNumber = 0;//0 - not connected, 1 connected as first one, 2 second 
@@ -192,6 +194,9 @@ public class NetworkedClient : MonoBehaviour
             case "SecondPlayer":
                 GameManager._instance.UpdateGameState(GameState.gameState);
                 connectionNumber = 2;
+                break;
+            case "Loser":
+                loserORwinner.text = "LOST";
                 break;
 
             default:

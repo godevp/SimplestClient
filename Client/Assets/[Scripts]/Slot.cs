@@ -13,42 +13,48 @@ public class Slot : MonoBehaviour
     public Sprite Xsprite;
     public Sprite Osprite;
     private ColorBlock colorss;
+    private bool gameOver = false;
     void Start()
     {
-       
         client = FindObjectOfType<NetworkedClient>();
     }
 
     public void SendResponseToHost(int number)
     {
-        if (client.turn && !slotsTaken[number-1])//if first player send (X) to the certain slot
+        if(!gameOver)
         {
-            client.SendMessageToHost("X" + ',' + number.ToString());
-            slotsTaken[number-1] = true;
-            buttons[number - 1].GetComponent<Image>().sprite = Xsprite;
+            if (client.turn && !slotsTaken[number - 1] && client.connectionNumber < 3)//if first player send (X) to the certain slot
+            {
+                client.SendMessageToHost("X" + ',' + number.ToString());
+                slotsTaken[number - 1] = true;
+                buttons[number - 1].GetComponent<Image>().sprite = Xsprite;
 
-         
-        }
-           
-        else if(!client.turn && !slotsTaken[number -1])//if second player send (O) to the certain slot
-        {
-            client.SendMessageToHost("O" + ',' + number.ToString());
-            slotsTaken[number - 1] = true;
-            buttons[number - 1].GetComponent<Image>().sprite = Osprite;
-           
-        }
 
-        if ((slotsTaken[0] && slotsTaken[1] && slotsTaken[2]) ||
-            (slotsTaken[3] && slotsTaken[4] && slotsTaken[5]) ||
-            (slotsTaken[6] && slotsTaken[7] && slotsTaken[8]) ||
-            (slotsTaken[0] && slotsTaken[3] && slotsTaken[6]) ||
-            (slotsTaken[2] && slotsTaken[5] && slotsTaken[8]) ||
-            (slotsTaken[2] && slotsTaken[4] && slotsTaken[6]) ||
-            (slotsTaken[1] && slotsTaken[4] && slotsTaken[7]) ||
-            (slotsTaken[0] && slotsTaken[4] && slotsTaken[8]))
-        {
-            client.SendMessageToHost(winner.ToString());
+            }
+
+            else if (!client.turn && !slotsTaken[number - 1] && client.connectionNumber < 3)//if second player send (O) to the certain slot
+            {
+                client.SendMessageToHost("O" + ',' + number.ToString());
+                slotsTaken[number - 1] = true;
+                buttons[number - 1].GetComponent<Image>().sprite = Osprite;
+
+            }
+
+            if ((slotsTaken[0] && slotsTaken[1] && slotsTaken[2]) ||
+                (slotsTaken[3] && slotsTaken[4] && slotsTaken[5]) ||
+                (slotsTaken[6] && slotsTaken[7] && slotsTaken[8]) ||
+                (slotsTaken[0] && slotsTaken[3] && slotsTaken[6]) ||
+                (slotsTaken[2] && slotsTaken[5] && slotsTaken[8]) ||
+                (slotsTaken[2] && slotsTaken[4] && slotsTaken[6]) ||
+                (slotsTaken[1] && slotsTaken[4] && slotsTaken[7]) ||
+                (slotsTaken[0] && slotsTaken[4] && slotsTaken[8]))
+            {
+                client.SendMessageToHost(winner.ToString());
+                client.loserORwinner.text = "Won";
+                gameOver = true;
+            }
         }
+  
     }
 
 }
