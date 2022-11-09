@@ -32,11 +32,13 @@ public class NetworkedClient : MonoBehaviour
     private TMP_InputField NewRoomField;
     [SerializeField]
     private TMP_Text ErrorText;
-
+    public Slot _slot;
     public TMP_Text loserORwinner;
 
     public bool turn = true; // true = first player(X), false = second player(O)
-    public int connectionNumber = 0;//0 - not connected, 1 connected as first one, 2 second 
+    public bool canMove = false;
+    public int connectionNumber = 0;//0 - not connected, 1 connected as first one, 2 second
+    public bool gameOver = false;
 
 
 
@@ -50,8 +52,8 @@ public class NetworkedClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
 
+       
 
         Connect();
         GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
@@ -150,8 +152,8 @@ public class NetworkedClient : MonoBehaviour
             HostTopology topology = new HostTopology(config, maxConnections);
             hostID = NetworkTransport.AddHost(topology, 0);
             Debug.Log("Socket open.  Host ID = " + hostID);
-
-            connectionID = NetworkTransport.Connect(hostID, "192.168.0.156", socketPort, 0, out error); // server is local on network
+            //192.168.0.156 home 10.0.254.6
+            connectionID = NetworkTransport.Connect(hostID, "10.0.254.6", socketPort, 0, out error); // server is local on network
 
             if (error == 0)
             {
@@ -177,7 +179,8 @@ public class NetworkedClient : MonoBehaviour
     private void ProcessRecievedMsg(string msg, int id)
     {
         Debug.Log("msg recieved = " + msg + ".  connection id = " + id);
-        switch(msg)
+        string[] splitter = msg.Split(',', System.StringSplitOptions.RemoveEmptyEntries);
+        switch (splitter[0])
         {
             case "LoginApproved":
                 GameManager._instance.UpdateGameState(GameState.accountState);
@@ -197,11 +200,32 @@ public class NetworkedClient : MonoBehaviour
                 break;
             case "Loser":
                 loserORwinner.text = "LOST";
+                gameOver = true;
+                break;
+
+            case "111":
+                canMove = true;
+                turn = true;
+
+                break;
+
+            case "222":
+                canMove = false;
+                turn = false;
+                
+                break;
+
+            case "333":
+                canMove = true;
+                Debug.Log(splitter[1] +"<<<<");
+                _slot.SetTheSlotToTaken(int.Parse(splitter[1]));
                 break;
 
             default:
                 break;
         }
+        
+
     }
 
     public bool IsConnected()
