@@ -45,20 +45,11 @@ public class Slot : MonoBehaviour
                 client.canMove = false;
             }
 
-            //if ((slotsTaken[0] && slotsTaken[1] && slotsTaken[2]) ||
-            //    (slotsTaken[3] && slotsTaken[4] && slotsTaken[5]) ||
-            //    (slotsTaken[6] && slotsTaken[7] && slotsTaken[8]) ||
-            //    (slotsTaken[0] && slotsTaken[3] && slotsTaken[6]) ||
-            //    (slotsTaken[2] && slotsTaken[5] && slotsTaken[8]) ||
-            //    (slotsTaken[2] && slotsTaken[4] && slotsTaken[6]) ||
-            //    (slotsTaken[1] && slotsTaken[4] && slotsTaken[7]) ||
-            //    (slotsTaken[0] && slotsTaken[4] && slotsTaken[8]))
-            //{
                 if((slotsByPlayer[0] == 1 && slotsByPlayer[1] == 1 && slotsByPlayer[2] == 1) ||
                    (slotsByPlayer[3] == 1 && slotsByPlayer[4] == 1 && slotsByPlayer[5] == 1) ||
                    (slotsByPlayer[6] == 1 && slotsByPlayer[7] == 1 && slotsByPlayer[8] == 1) ||
                    (slotsByPlayer[0] == 1 && slotsByPlayer[3] == 1 && slotsByPlayer[6] == 1) ||
-                   (slotsByPlayer[2] == 1 && slotsByPlayer[5] == 1 && slotsByPlayer[4] == 1) ||
+                   (slotsByPlayer[2] == 1 && slotsByPlayer[5] == 1 && slotsByPlayer[8] == 1) ||
                    (slotsByPlayer[2] == 1 && slotsByPlayer[4] == 1 && slotsByPlayer[6] == 1) ||
                    (slotsByPlayer[1] == 1 && slotsByPlayer[4] == 1 && slotsByPlayer[7] == 1) ||
                    (slotsByPlayer[0] == 1 && slotsByPlayer[4] == 1 && slotsByPlayer[8] == 1))
@@ -66,6 +57,22 @@ public class Slot : MonoBehaviour
                 client.SendMessageToHost(winner.ToString());
                 client.loserORwinner.text = "Won";
                 client.gameOver = true;
+                }
+            bool allTaken = true;
+            if (!client.gameOver && allTaken)
+            {
+                foreach(var b in slotsTaken)
+                {
+                    if(!b)
+                    {
+                        allTaken = false;
+                        break;
+                    }
+                }
+            }
+            if(allTaken)
+            {
+                Debug.Log("restart?+");
             }
         }
   
