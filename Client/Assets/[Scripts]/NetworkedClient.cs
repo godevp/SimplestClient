@@ -33,6 +33,11 @@ public class NetworkedClient : MonoBehaviour
     [SerializeField]
     private TMP_InputField textField;
     [SerializeField]
+    private GameObject prefabText;
+
+    [SerializeField]
+    private GameObject GridForTexts;
+    [SerializeField]
     private TMP_Text ErrorText;
     public Slot _slot;
     public TMP_Text loserORwinner;
@@ -188,7 +193,7 @@ public class NetworkedClient : MonoBehaviour
                 break;
             case "LoginDenied":
                 ErrorText.gameObject.SetActive(true);
-                ErrorText.text = "Wrong login or password, try again";
+                ErrorText.text = "Something wrong or somebody using the account";
                 break;
             case "FirstPlayer":
                 GameManager._instance.UpdateGameState(GameState.gameState);
@@ -264,11 +269,16 @@ public class NetworkedClient : MonoBehaviour
                 loserORwinner.text = "";
                 break;
 
+            case "555":
+
+                var newText = Instantiate(prefabText, GridForTexts.transform);
+                newText.GetComponent<TMP_Text>().text = splitter[1];
+                
+                break;
+
             default:
                 break;
         }
-        
-
     }
 
     public bool IsConnected()
@@ -281,7 +291,6 @@ public class NetworkedClient : MonoBehaviour
             login = logField.text;
         if (passwordField.text.Length != 0)
             password = passwordField.text;
-
 
         if(logField.text.Length != 0 && passwordField.text.Length != 0)
         {
@@ -308,6 +317,21 @@ public class NetworkedClient : MonoBehaviour
         if (NewRoomField.text.Length != 0)
         {
             SendMessageToHost(room_i.ToString() + ',' + NewRoomField.text);
+        }
+    }
+
+
+    public void SendMessageToChat()
+    {
+        if(textField.text.Length != 0)
+        {
+            SendMessageToHost(555.ToString() + ',' + textField.text);
+            var newText = Instantiate(prefabText, GridForTexts.transform);
+            if(turn)
+            newText.GetComponent<TMP_Text>().text = textField.text;
+            else
+            newText.GetComponent<TMP_Text>().text = textField.text;
+            textField.text = "";
         }
     }
 
