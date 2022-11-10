@@ -24,8 +24,12 @@ public class NetworkedClient : MonoBehaviour
     public GameObject AccountPart;
     public GameObject LoginPart;
     public GameObject GamePart;
+    public GameObject stopWatching;
     [SerializeField]
     private TMP_InputField logField;
+
+
+    public GameObject chat;
     [SerializeField]
     private TMP_InputField passwordField;
     [SerializeField]
@@ -51,6 +55,7 @@ public class NetworkedClient : MonoBehaviour
     static short login_i = 0;
     static short registration_i = 1;
     static short room_i = 2;
+    static short observer_i = 8;
 
     string login;
     string password;
@@ -98,16 +103,11 @@ public class NetworkedClient : MonoBehaviour
 
         logButton.GetComponent<Button>().onClick.AddListener(LogInF);
         registerButton.GetComponent<Button>().onClick.AddListener(RegisterF);
-
-       // logField.GetComponentInChildren<Text>().
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*if (Input.GetKeyDown(KeyCode.S))
-            SendMessageToHost("Hello from client");*/
-
         UpdateNetworkConnection();
     }
 
@@ -197,13 +197,36 @@ public class NetworkedClient : MonoBehaviour
                 break;
             case "FirstPlayer":
                 GameManager._instance.UpdateGameState(GameState.gameState);
+                ActivateSomeStuff();
                 break;
 
             case "SecondPlayer":
                 GameManager._instance.UpdateGameState(GameState.gameState);
+                ActivateSomeStuff();
 
                 break;
 
+            case "5":
+                _slot.EmptyButtons();
+                GameManager._instance.UpdateGameState(GameState.gameState);
+                canMove = false;
+                turn = false;
+                loserORwinner.gameObject.SetActive(false);
+                textField.gameObject.SetActive(false);
+                GridForTexts.gameObject.SetActive(false);
+                stopWatching.gameObject.SetActive(true);
+                chat.gameObject.SetActive(false);
+
+                break;
+            case "6":
+                _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Xsprite;
+
+                break;
+            case "7":
+                _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Osprite;
+
+
+                break;
             case "111":
                 canMove = true;
                 turn = true;//means we Xplayer
@@ -258,7 +281,7 @@ public class NetworkedClient : MonoBehaviour
                 loserORwinner.text = "Lost";
                 break;
 
-            case "3333"://lose
+            case "3333"://tie
                 canMove = false;
                 loserORwinner.text = "NO WINNER";
                 break;
@@ -318,9 +341,16 @@ public class NetworkedClient : MonoBehaviour
         {
             SendMessageToHost(room_i.ToString() + ',' + NewRoomField.text);
         }
+        
     }
 
-
+    public void ConnectAsObserver()
+    {
+        if (NewRoomField.text.Length != 0)
+        {
+            SendMessageToHost(observer_i.ToString() + ',' + NewRoomField.text);
+        }
+    }
     public void SendMessageToChat()
     {
         if(textField.text.Length != 0)
@@ -335,9 +365,25 @@ public class NetworkedClient : MonoBehaviour
         }
     }
 
+   void ActivateSomeStuff()
+    {
+        loserORwinner.gameObject.SetActive(true);
+        textField.gameObject.SetActive(true);
+        GridForTexts.gameObject.SetActive(true);
+        stopWatching.gameObject.SetActive(false);
+        chat.gameObject.SetActive(true);
+
+    }
+    public void StopWatching()
+    {
+        GameManager._instance.UpdateGameState(GameState.accountState);
+        SendMessageToHost("7");
+    }
+
 
     private void OnApplicationQuit()
     {
+        SendMessageToHost(69.ToString());
         SendMessageToHost(321.ToString() + ',' + login);
     }
 
