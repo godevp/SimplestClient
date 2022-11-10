@@ -167,6 +167,7 @@ public class NetworkedClient : MonoBehaviour
 
     public void Disconnect()
     {
+       
         NetworkTransport.Disconnect(hostID, connectionID, out error);
     }
 
@@ -259,6 +260,7 @@ public class NetworkedClient : MonoBehaviour
 
             case "123":
                 _slot.EmptyButtons();
+                canMove = false;
                 loserORwinner.text = "";
                 break;
 
@@ -307,6 +309,12 @@ public class NetworkedClient : MonoBehaviour
         {
             SendMessageToHost(room_i.ToString() + ',' + NewRoomField.text);
         }
+    }
+
+
+    private void OnApplicationQuit()
+    {
+        SendMessageToHost(321.ToString() + ',' + login);
     }
 
 }
