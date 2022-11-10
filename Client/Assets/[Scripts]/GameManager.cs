@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
             case GameState.accountState:
                 _client.LoginPart.SetActive(false);
                 _client.AccountPart.SetActive(true);
+                _client.GamePart.SetActive(false);
                 break;
             case GameState.gameState:
                 _client.AccountPart.SetActive(false);

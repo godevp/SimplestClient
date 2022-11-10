@@ -31,6 +31,8 @@ public class NetworkedClient : MonoBehaviour
     [SerializeField]
     private TMP_InputField NewRoomField;
     [SerializeField]
+    private TMP_InputField textField;
+    [SerializeField]
     private TMP_Text ErrorText;
     public Slot _slot;
     public TMP_Text loserORwinner;
@@ -199,6 +201,7 @@ public class NetworkedClient : MonoBehaviour
             case "111":
                 canMove = true;
                 turn = true;//means we Xplayer
+                loserORwinner.text = "Your Move";
 
                 break;
 
@@ -216,9 +219,11 @@ public class NetworkedClient : MonoBehaviour
                 if (turn)
                 {
                     canMove = false;
+                    loserORwinner.text = "";
                 }
                 else
                 {
+                    loserORwinner.text = "Your Move";
                     canMove = true;
                 }
 
@@ -228,9 +233,11 @@ public class NetworkedClient : MonoBehaviour
                 if (!turn)
                 {
                     canMove = false;
+                    loserORwinner.text = "";
                 }
                 else
                 {
+                    loserORwinner.text = "Your Move";
                     canMove = true;
                 }
                 break;
@@ -243,6 +250,16 @@ public class NetworkedClient : MonoBehaviour
             case "6666"://lose
                 canMove = false;
                 loserORwinner.text = "Lost";
+                break;
+
+            case "3333"://lose
+                canMove = false;
+                loserORwinner.text = "NO WINNER";
+                break;
+
+            case "123":
+                _slot.EmptyButtons();
+                loserORwinner.text = "";
                 break;
 
             default:

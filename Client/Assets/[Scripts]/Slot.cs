@@ -10,6 +10,7 @@ public class Slot : MonoBehaviour
     public List<Button> buttons;
     public Sprite Xsprite;
     public Sprite Osprite;
+    public Sprite startSprite;
 
     private const int turn = 1111;
 
@@ -26,5 +27,28 @@ public class Slot : MonoBehaviour
             client.SendMessageToHost(turn.ToString() + ',' + number.ToString());
         }
   
+    }
+
+
+    public void ExitTheRoom()
+    {
+        client.SendMessageToHost(69.ToString());
+        GameManager._instance.UpdateGameState(GameState.accountState);
+        client.canMove = false;
+        client.loserORwinner.text = "";
+        EmptyButtons();
+    }
+
+    public void RestartTheRoom()
+    {
+        client.SendMessageToHost(96.ToString());
+    }
+
+    public void EmptyButtons()
+    {
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            buttons[i].GetComponent<Image>().sprite = startSprite;
+        }
     }
 }
