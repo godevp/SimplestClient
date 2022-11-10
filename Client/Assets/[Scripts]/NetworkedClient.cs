@@ -37,8 +37,6 @@ public class NetworkedClient : MonoBehaviour
 
     public bool turn = true; // true = first player(X), false = second player(O)
     public bool canMove = false;
-    public int connectionNumber = 0;//0 - not connected, 1 connected as first one, 2 second
-    public bool gameOver = false;
 
 
 
@@ -191,33 +189,60 @@ public class NetworkedClient : MonoBehaviour
                 break;
             case "FirstPlayer":
                 GameManager._instance.UpdateGameState(GameState.gameState);
-                connectionNumber = 1;
-
                 break;
+
             case "SecondPlayer":
                 GameManager._instance.UpdateGameState(GameState.gameState);
-                connectionNumber = 2;
-                break;
-            case "Loser":
-                loserORwinner.text = "LOST";
-                gameOver = true;
+
                 break;
 
             case "111":
                 canMove = true;
-                turn = true;
+                turn = true;//means we Xplayer
 
                 break;
 
             case "222":
                 canMove = false;
-                turn = false;
-                
+                turn = false;//means we Oplayer
+
                 break;
 
-            case "333":
-                canMove = true;
-                _slot.SetTheSlotToTaken(int.Parse(splitter[1]));
+
+            case "999":
+                //set the sprite to X in the button[splitter[1]]
+                _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Xsprite;
+                
+                if (turn)
+                {
+                    canMove = false;
+                }
+                else
+                {
+                    canMove = true;
+                }
+
+                break;
+            case "888":
+                _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Osprite;
+                if (!turn)
+                {
+                    canMove = false;
+                }
+                else
+                {
+                    canMove = true;
+                }
+                break;
+
+            case "7777":  //win 
+                canMove = false;
+                loserORwinner.text = "Won";
+                break;
+
+            case "6666"://lose
+                canMove = false;
+                loserORwinner.text = "Lost";
                 break;
 
             default:
