@@ -7,6 +7,37 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 
+
+
+public struct Ident
+{
+    public const string LoginApproved = "1";
+    public const string LoginDenied = "2";
+    public const string Player = "3";
+    public const string SecondPlayer = "4";
+    public const string Spectator = "5";
+    public const string ChatMsg = "6";
+    public const string ObsUpdateX = "7";
+    public const string ObsUpdateO = "8";
+    public const string PlayerUpdateX = "9";
+    public const string PlayerUpdateO = "10";
+    public const string winner = "11";
+    public const string loser = "12";
+    public const string tie = "13";
+    public const string turn1 = "14";
+    public const string turn2 = "15";
+    public const string restart = "16";
+    public const string stopWatching = "17";
+    public const string exit = "18";
+    public const string requestRestart = "19";
+    public const string move = "20";
+    public const string dscnt = "21";
+    public const string room = "22";
+    public const string reg = "23";
+    public const string logIn = "24";
+}
+
+
 public class NetworkedClient : MonoBehaviour
 {
 
@@ -50,21 +81,11 @@ public class NetworkedClient : MonoBehaviour
     public bool canMove = false;
 
 
-
-    //Indetifiers
-    static short login_i = 0;
-    static short registration_i = 1;
-    static short room_i = 2;
-    static short observer_i = 8;
-
     string login;
     string password;
     // Start is called before the first frame update
     void Start()
     {
-
-       
-
         Connect();
         GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
 
@@ -74,7 +95,6 @@ public class NetworkedClient : MonoBehaviour
             {
                 case "Login_b":
 
-                   
                     logButton = obj;
                     break;
                 case "Register_b":
@@ -132,7 +152,6 @@ public class NetworkedClient : MonoBehaviour
                 case NetworkEventType.DataEvent:
                     string msg = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
                     ProcessRecievedMsg(msg, recConnectionID);
-                    //Debug.Log("got msg = " + msg);
                     break;
                 case NetworkEventType.DisconnectEvent:
                     isConnected = false;
@@ -188,63 +207,43 @@ public class NetworkedClient : MonoBehaviour
         string[] splitter = msg.Split(',', System.StringSplitOptions.RemoveEmptyEntries);
         switch (splitter[0])
         {
-            case "LoginApproved":
+            case Ident.LoginApproved:
                 GameManager._instance.UpdateGameState(GameState.accountState);
                 break;
-            case "LoginDenied":
+
+            case Ident.LoginDenied:
                 ErrorText.gameObject.SetActive(true);
                 ErrorText.text = "Something wrong or somebody using the account";
                 break;
-            case "FirstPlayer":
+
+            case Ident.Player:
                 GameManager._instance.UpdateGameState(GameState.gameState);
-                ActivateSomeStuff();
+                ActivationForPlayer();
                 break;
 
-            case "SecondPlayer":
+            case Ident.Spectator:
                 GameManager._instance.UpdateGameState(GameState.gameState);
-                ActivateSomeStuff();
-
+                DeactivateForSpectator();
                 break;
 
-            case "5":
-                _slot.EmptyButtons();
-                GameManager._instance.UpdateGameState(GameState.gameState);
-                canMove = false;
-                turn = false;
-                loserORwinner.gameObject.SetActive(false);
-                textField.gameObject.SetActive(false);
-                GridForTexts.gameObject.SetActive(false);
-                stopWatching.gameObject.SetActive(true);
-                chat.gameObject.SetActive(false);
+            case Ident.ChatMsg:
 
+                var newText = Instantiate(prefabText, GridForTexts.transform);
+                newText.GetComponent<TMP_Text>().text = splitter[1];
                 break;
-            case "6":
+
+            case Ident.ObsUpdateX:
                 _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Xsprite;
 
                 break;
-            case "7":
+            case Ident.ObsUpdateO:
                 _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Osprite;
-
-
-                break;
-            case "111":
-                canMove = true;
-                turn = true;//means we Xplayer
-                loserORwinner.text = "Your Move";
-
                 break;
 
-            case "222":
-                canMove = false;
-                turn = false;//means we Oplayer
-
-                break;
-
-
-            case "999":
+            case Ident.PlayerUpdateX:
                 //set the sprite to X in the button[splitter[1]]
                 _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Xsprite;
-                
+
                 if (turn)
                 {
                     canMove = false;
@@ -257,7 +256,8 @@ public class NetworkedClient : MonoBehaviour
                 }
 
                 break;
-            case "888":
+
+            case Ident.PlayerUpdateO:
                 _slot.buttons[int.Parse(splitter[1])].GetComponent<Image>().sprite = _slot.Osprite;
                 if (!turn)
                 {
@@ -271,32 +271,37 @@ public class NetworkedClient : MonoBehaviour
                 }
                 break;
 
-            case "7777":  //win 
+            case Ident.winner:  //win 
                 canMove = false;
                 loserORwinner.text = "Won";
                 break;
 
-            case "6666"://lose
+            case Ident.loser://lose
                 canMove = false;
                 loserORwinner.text = "Lost";
                 break;
 
-            case "3333"://tie
+            case Ident.tie://tie
                 canMove = false;
                 loserORwinner.text = "NO WINNER";
                 break;
 
-            case "123":
+            case Ident.turn1:
+                canMove = true;
+                turn = true;//means we Xplayer
+                loserORwinner.text = "Your Move";
+                break;
+
+            case Ident.turn2:
+                canMove = false;
+                turn = false;//means we Oplayer
+                break;
+
+
+            case Ident.restart:
                 _slot.EmptyButtons();
                 canMove = false;
                 loserORwinner.text = "";
-                break;
-
-            case "555":
-
-                var newText = Instantiate(prefabText, GridForTexts.transform);
-                newText.GetComponent<TMP_Text>().text = splitter[1];
-                
                 break;
 
             default:
@@ -317,7 +322,7 @@ public class NetworkedClient : MonoBehaviour
 
         if(logField.text.Length != 0 && passwordField.text.Length != 0)
         {
-            SendMessageToHost(login_i.ToString() + ',' + login + ',' +                              
+            SendMessageToHost(Ident.logIn + ',' + login + ',' +                              
                               password);
         }
     }
@@ -331,7 +336,7 @@ public class NetworkedClient : MonoBehaviour
 
         if (logField.text.Length != 0 && passwordField.text.Length != 0)
         {
-            SendMessageToHost(registration_i.ToString() + ',' + login + ',' +
+            SendMessageToHost(Ident.reg + ',' + login + ',' +
                               password);
         }
     }
@@ -339,23 +344,23 @@ public class NetworkedClient : MonoBehaviour
     {
         if (NewRoomField.text.Length != 0)
         {
-            SendMessageToHost(room_i.ToString() + ',' + NewRoomField.text);
+            SendMessageToHost(Ident.room + ',' + NewRoomField.text);
         }
-        
     }
 
     public void ConnectAsObserver()
     {
         if (NewRoomField.text.Length != 0)
         {
-            SendMessageToHost(observer_i.ToString() + ',' + NewRoomField.text);
+            SendMessageToHost(Ident.Spectator + ',' + NewRoomField.text);
         }
+        _slot.EmptyButtons();
     }
     public void SendMessageToChat()
     {
         if(textField.text.Length != 0)
         {
-            SendMessageToHost(555.ToString() + ',' + textField.text);
+            SendMessageToHost(Ident.ChatMsg + ',' + textField.text);
             var newText = Instantiate(prefabText, GridForTexts.transform);
             if(turn)
             newText.GetComponent<TMP_Text>().text = textField.text;
@@ -365,7 +370,7 @@ public class NetworkedClient : MonoBehaviour
         }
     }
 
-   void ActivateSomeStuff()
+   void ActivationForPlayer()
     {
         loserORwinner.gameObject.SetActive(true);
         textField.gameObject.SetActive(true);
@@ -374,17 +379,27 @@ public class NetworkedClient : MonoBehaviour
         chat.gameObject.SetActive(true);
 
     }
+    void DeactivateForSpectator()
+    {
+        canMove = false;
+        turn = false;
+        loserORwinner.gameObject.SetActive(false);
+        textField.gameObject.SetActive(false);
+        GridForTexts.gameObject.SetActive(false);
+        stopWatching.gameObject.SetActive(true);
+        chat.gameObject.SetActive(false);
+    }
     public void StopWatching()
     {
         GameManager._instance.UpdateGameState(GameState.accountState);
-        SendMessageToHost("7");
+        SendMessageToHost(Ident.stopWatching);
     }
 
 
     private void OnApplicationQuit()
     {
-        SendMessageToHost(69.ToString());
-        SendMessageToHost(321.ToString() + ',' + login);
+        SendMessageToHost(Ident.exit);
+        SendMessageToHost(Ident.dscnt + ',' + login);
     }
 
 }

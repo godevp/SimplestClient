@@ -12,7 +12,6 @@ public class Slot : MonoBehaviour
     public Sprite Osprite;
     public Sprite startSprite;
 
-    private const int turn = 1111;
 
     
     void Start()
@@ -24,15 +23,14 @@ public class Slot : MonoBehaviour
     {
         if(client.canMove)
         {
-            client.SendMessageToHost(turn.ToString() + ',' + number.ToString());
+            client.SendMessageToHost(Ident.move + ',' + number.ToString());
         }
-  
     }
 
 
     public void ExitTheRoom()
     {
-        client.SendMessageToHost(69.ToString());
+        client.SendMessageToHost(Ident.exit);
         GameManager._instance.UpdateGameState(GameState.accountState);
         client.canMove = false;
         client.loserORwinner.text = "";
@@ -41,7 +39,7 @@ public class Slot : MonoBehaviour
 
     public void RestartTheRoom()
     {
-        client.SendMessageToHost(96.ToString());
+        client.SendMessageToHost(Ident.restart);
     }
 
     public void EmptyButtons()
