@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,8 @@ public class Slot : MonoBehaviour
     public Sprite startSprite;
 
 
-    
+  
+
     void Start()
     {
         client = FindObjectOfType<NetworkedClient>();
@@ -26,7 +28,6 @@ public class Slot : MonoBehaviour
             client.SendMessageToHost(Ident.move + ',' + number.ToString());
         }
     }
-
 
     public void ExitTheRoom()
     {
