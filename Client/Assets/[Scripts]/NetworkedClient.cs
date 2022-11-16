@@ -310,6 +310,8 @@ public class NetworkedClient : MonoBehaviour
 
             case Ident.FeelTheListOfReplays:
                 ListOfReplays.Add(msg);
+                //foreach of these create a replay button and fill the who and where Moved.
+                
                 break;
 
             case Ident.CleanTheListOfReplays:
