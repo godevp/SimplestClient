@@ -35,6 +35,8 @@ public struct Ident
     public const string room = "22";
     public const string reg = "23";
     public const string logIn = "24";
+    public const string FeelTheListOfReplays = "25";
+    public const string CleanTheListOfReplays = "26";
 }
 
 
@@ -77,6 +79,8 @@ public class NetworkedClient : MonoBehaviour
     public Slot _slot;
     public TMP_Text loserORwinner;
 
+    public List<string> ListOfReplays;
+
     public bool turn = true; // true = first player(X), false = second player(O)
     public bool canMove = false;
 
@@ -88,7 +92,7 @@ public class NetworkedClient : MonoBehaviour
     {
         Connect();
         GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
-
+        ListOfReplays = new List<string>();
         foreach (GameObject obj in allGameObjects)
         {
             switch (obj.name)
@@ -177,7 +181,7 @@ public class NetworkedClient : MonoBehaviour
             hostID = NetworkTransport.AddHost(topology, 0);
             Debug.Log("Socket open.  Host ID = " + hostID);
             //192.168.0.156 home 10.0.254.6
-            connectionID = NetworkTransport.Connect(hostID, "192.168.0.156", socketPort, 0, out error); // server is local on network
+            connectionID = NetworkTransport.Connect(hostID, "10.0.228.152", socketPort, 0, out error); // server is local on network
 
             if (error == 0)
             {
@@ -303,6 +307,15 @@ public class NetworkedClient : MonoBehaviour
                 canMove = false;
                 loserORwinner.text = "";
                 break;
+
+            case Ident.FeelTheListOfReplays:
+                ListOfReplays.Add(msg);
+                break;
+
+            case Ident.CleanTheListOfReplays:
+                ListOfReplays.Clear();
+                break;
+
 
             default:
                 break;
