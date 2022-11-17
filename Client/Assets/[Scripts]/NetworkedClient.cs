@@ -74,6 +74,7 @@ public class NetworkedClient : MonoBehaviour
     private GameObject prefabForReplay;
     [SerializeField]
     private GameObject gridForReplay;
+    private List<GameObject> listOfReplayObjects;
 
     [SerializeField]
     private GameObject GridForTexts;
@@ -97,6 +98,7 @@ public class NetworkedClient : MonoBehaviour
         Connect();
         GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
         ListOfReplays = new List<string>();
+        listOfReplayObjects = new List<GameObject>();
         foreach (GameObject obj in allGameObjects)
         {
             switch (obj.name)
@@ -315,20 +317,25 @@ public class NetworkedClient : MonoBehaviour
             case Ident.FeelTheListOfReplays:
                 if (splitter[1] == "clean")
                 {
+                    foreach(GameObject x in listOfReplayObjects)
+                    {
+                        Destroy(x);
+                    }
+                    listOfReplayObjects.Clear();
                     ListOfReplays.Clear();
                 }
                
                 //foreach of these create a replay button and fill the who and where Moved.
-                else if (splitter[1] == "done")
+                if (splitter[1] == "done")
                 {
                     foreach (string _rep in ListOfReplays)
                     {
-                        Debug.Log(_rep);
                         var newRep = Instantiate(prefabForReplay, gridForReplay.transform);
                         newRep.GetComponent<ReplayButton>().text.text = _rep;
+                        listOfReplayObjects.Add(newRep);
                     }
                 }
-                else if(splitter[1] != "done" && splitter[1] != "clean")
+                if(splitter[1] != "done" && splitter[1] != "clean" && !ListOfReplays.Contains(splitter[1]))
                 {
                     ListOfReplays.Add(splitter[1]);
                 }
@@ -442,6 +449,7 @@ public class NetworkedClient : MonoBehaviour
         GameManager._instance.UpdateGameState(GameState.accountState);
         _slot.EmptyButtons();
         SendMessageToHost(Ident.stopWatching);
+        SendMessageToHost(Ident.FeelTheListOfReplays);
     }
 
 
