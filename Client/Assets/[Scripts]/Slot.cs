@@ -31,7 +31,6 @@ public class Slot : MonoBehaviour
 
     public void ExitTheRoom()
     {
-        client.ListOfReplays.Clear();
         client.SendMessageToHost(Ident.FeelTheListOfReplays);
         client.SendMessageToHost(Ident.exit);
         GameManager._instance.UpdateGameState(GameState.accountState);
