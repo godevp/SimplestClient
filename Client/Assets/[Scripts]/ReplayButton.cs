@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ReplayButton : MonoBehaviour
 {
-    public List<int> whoMoved;
-    public List<int> whereMoved;
+    public TMP_Text text;
 
-    private void Start()
+
+
+    public void WantThisReplay()
     {
-        whoMoved = new List<int>();
-        whereMoved = new List<int>();
+        NetworkedClient.instace.SendMessageToHost(Ident.RequestForReplay + ',' + text.text);
+        GameManager._instance.UpdateGameState(GameState.gameState);
+        NetworkedClient.instace.DeactivateForSpectator();
+        NetworkedClient.instace.stopWatching.gameObject.SetActive(false);
     }
 }

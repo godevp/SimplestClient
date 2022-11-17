@@ -6,8 +6,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
-
-
+using System.IO;
 
 public struct Ident
 {
@@ -36,13 +35,13 @@ public struct Ident
     public const string reg = "23";
     public const string logIn = "24";
     public const string FeelTheListOfReplays = "25";
-    public const string CleanTheListOfReplays = "26";
+    public const string RequestForReplay = "26";
 }
 
 
 public class NetworkedClient : MonoBehaviour
 {
-
+    public static NetworkedClient instace;
     int connectionID;
     int maxConnections = 1000;
     int reliableChannelID;
@@ -71,6 +70,10 @@ public class NetworkedClient : MonoBehaviour
     private TMP_InputField textField;
     [SerializeField]
     private GameObject prefabText;
+    [SerializeField]
+    private GameObject prefabForReplay;
+    [SerializeField]
+    private GameObject gridForReplay;
 
     [SerializeField]
     private GameObject GridForTexts;
@@ -90,6 +93,7 @@ public class NetworkedClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        instace = this;
         Connect();
         GameObject[] allGameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
         ListOfReplays = new List<string>();
@@ -181,7 +185,7 @@ public class NetworkedClient : MonoBehaviour
             hostID = NetworkTransport.AddHost(topology, 0);
             Debug.Log("Socket open.  Host ID = " + hostID);
             //192.168.0.156 home 10.0.254.6
-            connectionID = NetworkTransport.Connect(hostID, "10.0.228.152", socketPort, 0, out error); // server is local on network
+            connectionID = NetworkTransport.Connect(hostID, "192.168.0.156", socketPort, 0, out error); // server is local on network
 
             if (error == 0)
             {
@@ -309,14 +313,43 @@ public class NetworkedClient : MonoBehaviour
                 break;
 
             case Ident.FeelTheListOfReplays:
-                ListOfReplays.Add(msg);
+                if (splitter[1] == "clean")
+                {
+                    ListOfReplays.Clear();
+                }
+               
                 //foreach of these create a replay button and fill the who and where Moved.
+                else if (splitter[1] == "done")
+                {
+                    foreach (string _rep in ListOfReplays)
+                    {
+                        Debug.Log(_rep);
+                        var newRep = Instantiate(prefabForReplay, gridForReplay.transform);
+                        newRep.GetComponent<ReplayButton>().text.text = _rep;
+                    }
+                }
+                else if(splitter[1] != "done" && splitter[1] != "clean")
+                {
+                    ListOfReplays.Add(splitter[1]);
+                }
+                break;
+            case Ident.RequestForReplay:
+                if(splitter[1] == "1")
+                {
+                    _slot.buttons[int.Parse(splitter[2])].GetComponent<Image>().sprite = _slot.Xsprite;
+                }
+                if (splitter[1] == "2")
+                {
+                    _slot.buttons[int.Parse(splitter[2])].GetComponent<Image>().sprite = _slot.Osprite;
+                }
+                if(splitter[1] == "obsExit")
+                {
+                    stopWatching.gameObject.SetActive(true);
+                }
+
                 
                 break;
-
-            case Ident.CleanTheListOfReplays:
-                ListOfReplays.Clear();
-                break;
+          
 
 
             default:
@@ -394,7 +427,7 @@ public class NetworkedClient : MonoBehaviour
         chat.gameObject.SetActive(true);
 
     }
-    void DeactivateForSpectator()
+    public void DeactivateForSpectator()
     {
         canMove = false;
         turn = false;
@@ -407,6 +440,7 @@ public class NetworkedClient : MonoBehaviour
     public void StopWatching()
     {
         GameManager._instance.UpdateGameState(GameState.accountState);
+        _slot.EmptyButtons();
         SendMessageToHost(Ident.stopWatching);
     }
 
