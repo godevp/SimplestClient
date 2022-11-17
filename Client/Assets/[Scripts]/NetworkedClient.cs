@@ -447,8 +447,11 @@ public class NetworkedClient : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        SendMessageToHost(Ident.exit);
-        SendMessageToHost(Ident.dscnt + ',' + login);
+        if(login != null)
+        {
+            SendMessageToHost(Ident.exit);
+            SendMessageToHost(Ident.dscnt + ',' + login);
+        }
     }
 
 }
