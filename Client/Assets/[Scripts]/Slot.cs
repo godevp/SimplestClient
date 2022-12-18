@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Slot : MonoBehaviour
 {
-    NetworkedClient client;
+    NetworkedClientProcessing client;
     public List<Button> buttons;
     public Sprite Xsprite;
     public Sprite Osprite;
@@ -18,21 +18,21 @@ public class Slot : MonoBehaviour
 
     void Start()
     {
-        client = FindObjectOfType<NetworkedClient>();
+        client = NetworkedClientProcessing.Instance;
     }
 
     public void SendResponseToHost(int number)
     {
         if(client.canMove)
         {
-            client.SendMessageToHost(Ident.move + ',' + number.ToString());
+            client.SendMessageToHost(ClientToServerSignifiers.move.ToString() + ',' + number.ToString());
         }
     }
 
     public void ExitTheRoom()
     {
-        client.SendMessageToHost(Ident.FeelTheListOfReplays);
-        client.SendMessageToHost(Ident.exit);
+        client.SendMessageToHost(ClientToServerSignifiers.FeelTheListOfReplays.ToString());
+        client.SendMessageToHost(ClientToServerSignifiers.exit.ToString());
         GameManager._instance.UpdateGameState(GameState.accountState);
         client.canMove = false;
         client.loserORwinner.text = "";
@@ -42,7 +42,7 @@ public class Slot : MonoBehaviour
 
     public void RestartTheRoom()
     {
-        client.SendMessageToHost(Ident.restart);
+        client.SendMessageToHost(ClientToServerSignifiers.restart.ToString());
     }
 
     public void EmptyButtons()

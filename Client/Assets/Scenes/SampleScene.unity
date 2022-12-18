@@ -1410,8 +1410,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1755760610}
-        m_TargetAssemblyTypeName: NetworkedClient, Assembly-CSharp
+      - m_Target: {fileID: 1755760612}
+        m_TargetAssemblyTypeName: NetworkedClientProcessing, Assembly-CSharp
         m_MethodName: SendMessageToChat
         m_Mode: 1
         m_Arguments:
@@ -2747,8 +2747,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1755760610}
-        m_TargetAssemblyTypeName: NetworkedClient, Assembly-CSharp
+      - m_Target: {fileID: 1755760612}
+        m_TargetAssemblyTypeName: NetworkedClientProcessing, Assembly-CSharp
         m_MethodName: CreateRoom
         m_Mode: 1
         m_Arguments:
@@ -2851,7 +2851,7 @@ GameObject:
   - component: {fileID: 847856851}
   - component: {fileID: 847856852}
   m_Layer: 5
-  m_Name: Grid
+  m_Name: GridForReplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4226,8 +4226,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1755760610}
-        m_TargetAssemblyTypeName: NetworkedClient, Assembly-CSharp
+      - m_Target: {fileID: 1755760612}
+        m_TargetAssemblyTypeName: NetworkedClientProcessing, Assembly-CSharp
         m_MethodName: ConnectAsObserver
         m_Mode: 1
         m_Arguments:
@@ -6234,8 +6234,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1755760610}
-        m_TargetAssemblyTypeName: NetworkedClient, Assembly-CSharp
+      - m_Target: {fileID: 1755760612}
+        m_TargetAssemblyTypeName: NetworkedClientProcessing, Assembly-CSharp
         m_MethodName: StopWatching
         m_Mode: 1
         m_Arguments:
@@ -6606,6 +6606,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1755760611}
   - component: {fileID: 1755760610}
+  - component: {fileID: 1755760612}
   m_Layer: 0
   m_Name: NetworkedClientComp
   m_TagString: Untagged
@@ -6625,25 +6626,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56c0018d9d3ed094fb53ccbd69b4e946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AccountPart: {fileID: 0}
-  LoginPart: {fileID: 0}
-  GamePart: {fileID: 0}
-  stopWatching: {fileID: 1726948037}
-  logField: {fileID: 556303075}
-  chat: {fileID: 1527144657}
-  passwordField: {fileID: 51384123}
-  NewRoomField: {fileID: 1539081763}
-  textField: {fileID: 2131664877}
-  prefabText: {fileID: 6205091460615298630, guid: 08c45e33888672b4ea1fe7646308aa25, type: 3}
-  prefabForReplay: {fileID: 5670407047318420884, guid: 52fc887d7b72d45b5bfec4cb33caba23, type: 3}
-  gridForReplay: {fileID: 847856849}
-  GridForTexts: {fileID: 2000976220}
-  ErrorText: {fileID: 1730856344}
-  _slot: {fileID: 2092895182}
-  loserORwinner: {fileID: 1052882427}
-  ListOfReplays: []
-  turn: 1
-  canMove: 0
 --- !u!4 &1755760611
 Transform:
   m_ObjectHideFlags: 0
@@ -6659,6 +6641,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1755760612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755760609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6360d5579a193794b80ab9db38591d8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AccountPart: {fileID: 0}
+  LoginPart: {fileID: 0}
+  GamePart: {fileID: 0}
+  stopWatching: {fileID: 0}
+  logField: {fileID: 0}
+  chat: {fileID: 0}
+  passwordField: {fileID: 0}
+  NewRoomField: {fileID: 0}
+  textField: {fileID: 0}
+  prefabText: {fileID: 6205091460615298630, guid: 08c45e33888672b4ea1fe7646308aa25, type: 3}
+  prefabForReplay: {fileID: 5670407047318420884, guid: 52fc887d7b72d45b5bfec4cb33caba23, type: 3}
+  gridForReplay: {fileID: 0}
+  GridForTexts: {fileID: 0}
+  ErrorText: {fileID: 0}
+  _slot: {fileID: 0}
+  loserORwinner: {fileID: 0}
+  ListOfReplays: []
+  turn: 1
+  canMove: 0
 --- !u!1 &1765522958
 GameObject:
   m_ObjectHideFlags: 0
@@ -7194,7 +7207,7 @@ GameObject:
   - component: {fileID: 2000976223}
   - component: {fileID: 2000976222}
   m_Layer: 5
-  m_Name: Grid
+  m_Name: GridForText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

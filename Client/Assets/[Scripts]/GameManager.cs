@@ -9,19 +9,12 @@ public class GameManager : MonoBehaviour
 
     public GameState _state;
 
-    private NetworkedClient _client;
 
     public static event Action<GameState> OnGameStateChanged;
 
     private void Awake()
     {
         _instance = this;
-    }
-
-    public void Start()
-    {
-        UpdateGameState(GameState.logingState);
-        _client = FindObjectOfType<NetworkedClient>();
     }
 
     public void UpdateGameState(GameState newState)
@@ -35,13 +28,13 @@ public class GameManager : MonoBehaviour
 
                 break;
             case GameState.accountState:
-                _client.LoginPart.SetActive(false);
-                _client.AccountPart.SetActive(true);
-                _client.GamePart.SetActive(false);
+                NetworkedClientProcessing.Instance.LoginPart.SetActive(false);
+                NetworkedClientProcessing.Instance.AccountPart.SetActive(true);
+                NetworkedClientProcessing.Instance.GamePart.SetActive(false);
                 break;
             case GameState.gameState:
-                _client.AccountPart.SetActive(false);
-                _client.GamePart.SetActive(true);
+                NetworkedClientProcessing.Instance.AccountPart.SetActive(false);
+                NetworkedClientProcessing.Instance.GamePart.SetActive(true);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);

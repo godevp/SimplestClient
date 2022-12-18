@@ -6,14 +6,11 @@ using UnityEngine;
 public class ReplayButton : MonoBehaviour
 {
     public TMP_Text text;
-
-
-
     public void WantThisReplay()
     {
-        NetworkedClient.instace.SendMessageToHost(Ident.RequestForReplay + ',' + text.text);
+        NetworkedClientProcessing.Instance.SendMessageToHost(ClientToServerSignifiers.RequestForReplay.ToString() + ',' + text.text);
         GameManager._instance.UpdateGameState(GameState.gameState);
-        NetworkedClient.instace.DeactivateForSpectator();
-        NetworkedClient.instace.stopWatching.gameObject.SetActive(false);
+        NetworkedClientProcessing.Instance.DeactivateForSpectator();
+        NetworkedClientProcessing.Instance.stopWatching.gameObject.SetActive(false);
     }
 }
